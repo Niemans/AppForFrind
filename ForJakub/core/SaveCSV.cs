@@ -9,7 +9,7 @@ namespace ForJakub.core
 {
     internal class SaveCSV : ISave
     {
-        public bool Save(IPerson person)
+        public bool Save(Person person)
         {
             using var writer = new StreamWriter("C:\\Users\\Lukasz\\source\\repos\\ForJakub\\ForJakub\\Files\\current_score.csv");
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
@@ -25,12 +25,12 @@ namespace ForJakub.core
             return true;
         }
 
-        public bool SaveFile(IEnumerable<IPerson> PersonEnumerable)
+        public bool SaveFile(IEnumerable<Person> PersonEnumerable)
         {
             throw new NotImplementedException();
         }
 
-        public bool SaveNewRow(IPerson person)
+        public bool SaveNewRow(Person person)
         {
             throw new NotImplementedException();
         }

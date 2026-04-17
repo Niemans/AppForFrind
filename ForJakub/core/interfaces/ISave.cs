@@ -6,11 +6,11 @@ namespace ForJakub.core.interfaces
 {
     internal interface ISave
     {
-        public bool SaveNewRow(IPerson person);
+        public bool SaveNewRow(Person person);
         
-        public bool Save(IPerson person);
+        public bool Save(Person person);
         
-        public bool SaveFile(IEnumerable<IPerson> PersonEnumerable);
+        public bool SaveFile(IEnumerable<Person> PersonEnumerable);
 
 
     }
