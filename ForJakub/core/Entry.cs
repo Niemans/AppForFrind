@@ -6,7 +6,7 @@ namespace ForJakub.core
 {
     internal class Entry
     {
-        public required Person person;
+        public required Player person;
         public double difference;
         public int placement;
     }

@@ -1,11 +1,11 @@
-﻿using ForJakub.core.interfaces;
+﻿using ForJakub.core.interdaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ForJakub.core
 {
-    internal class Person
+    internal class Player : IData
     {
         public const int relevantDecimalPoint = 5;
 

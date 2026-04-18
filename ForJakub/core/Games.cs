@@ -4,7 +4,7 @@ namespace ForJakub.core
     {
         public readonly List<Game> games;
 
-        public readonly Dictionary<Person, List<Game>> peopleGamesHistory;
+        public readonly Dictionary<Player, List<Game>> peopleGamesHistory;
 
         public Games()
         {

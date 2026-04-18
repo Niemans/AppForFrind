@@ -1,16 +1,17 @@
-﻿using System;
+﻿using ForJakub.core.interdaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ForJakub.core
 {
-    internal class Game
+    internal class Game : IData
     {
         public required long ID { get; init; }
         public required DateTime Time { get; init; }
-        public string Comment { get; set; }
+        public required string Comment { get; set; }
 
-        public required List<Entry> players;
+        public required List<Entry> playerEntry;
 
     }
 }
