@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace ForJakub.core.interdaces
 {
-    internal interface IData
-    {
-    }
+    internal interface IData {}
 }

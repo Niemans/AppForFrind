@@ -8,17 +8,31 @@ using System.Text;
 
 namespace ForJakub.gateway.Data
 {
-    internal class CsvPlayer(DataRow dr) : ISavable<Player>
+    internal class CsvPlayer : ISavable<Player>
     {
-        private DataRow playerData = dr;
+        private DataRow playerData;
 
-        public void GetFrom(Player data)
+
+        public CsvPlayer() => playerData = new DataTable().NewRow();
+        public CsvPlayer(DataRow playerData) => this.playerData = playerData;
+
+
+        public Player Get()
+        {
+            return new()
+            {
+                PlayerID = (ulong)playerData[CsvGameColumnNames.GetFriendlyName(CsvGameColumnNames.Names.PlayerID)],
+                PlayerName = (string)playerData[CsvGameColumnNames.GetFriendlyName(CsvGameColumnNames.Names.PlayerName)],
+                PlayerCurrentPoints = (double)playerData[CsvGameColumnNames.GetFriendlyName(CsvGameColumnNames.Names.PlayerCurrentPoints)]
+            };
+        }
+
+        public void Set(Player data)
         {
             DataTable table = new();
             foreach (var prop in data.GetType().GetProperties())
             {
                 table.Columns.Add(prop.Name, prop.PropertyType);
-
             }
 
             DataRow row = table.NewRow();
@@ -30,22 +44,8 @@ namespace ForJakub.gateway.Data
             playerData = row;
         }
 
-        public Player? MapTo()
-        {
-
-            Player p = new()
-            {
-                ID = (int)playerData["ID"],
-                Name = (string)playerData["Name"],
-                CurentPoints = (double)playerData["CurentPoints"]
-            };
-
-            return p;
-        }
-
         public DataRow GetDataRow(int index = 0) => playerData;
 
         public DataTable GetDataTable() => playerData.Table;
-
     }
 }

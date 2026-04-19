@@ -12,17 +12,16 @@ namespace ForJakub.gateway.Data
     {
         private DataTable gameData = dt;
 
-        public void GetFrom(Game data)
+        public void Set(Game data)
         {
             DataTable table = new();
+            foreach (var name in CsvGameColumnNames.GetFriendlyNames())
+            {
+                var type = data.GetType().getP
 
-            table.Columns.AddRange([
-                new("a"),
-                new("b")
-                ]);
+            }
 
-
-            foreach (var entry in data.playerEntry)
+            foreach (var entry in data.playerEntries)
             {
                 DataRow row = table.NewRow();
                 foreach (var prop in entry.GetType().GetProperties())
@@ -35,7 +34,7 @@ namespace ForJakub.gateway.Data
             gameData = table;
         }
 
-        public Game? MapTo()
+        public Game Get()
         {
             return null;
         }

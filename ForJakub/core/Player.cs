@@ -9,15 +9,15 @@ namespace ForJakub.core
     {
         public const int relevantDecimalPoint = 5;
 
-        public required int ID { get; init; }
-        public required string Name { get; init; }
-        public required double CurentPoints { get; set; }
-        private long? LastGameID { get; set; }
-
+        public required ulong PlayerID { get; init; }
+        public required string PlayerName { get; init; }
+        public required double PlayerCurrentPoints { get; set; }
+        
+        private Game? LastGame { get; set; }
 
         public double GetRoundedPoints()
         {
-            return Math.Round(CurentPoints, relevantDecimalPoint);
+            return Math.Round(PlayerCurrentPoints, relevantDecimalPoint);
         }
     }
 }
