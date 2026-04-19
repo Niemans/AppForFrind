@@ -1,7 +1,4 @@
-﻿using ForJakub.core.interdaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ForJakub.core.interfaces;
 
 namespace ForJakub.core
 {

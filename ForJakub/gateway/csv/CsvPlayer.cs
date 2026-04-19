@@ -1,12 +1,10 @@
 ﻿using ForJakub.core;
-using ForJakub.core.interdaces;
 using ForJakub.gateway.interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
-namespace ForJakub.gateway.Data
+using static ForJakub.gateway.CsvGameColumnNames;
+
+namespace ForJakub.gateway.csv
 {
     internal class CsvPlayer : ISavable<Player>
     {
@@ -16,14 +14,13 @@ namespace ForJakub.gateway.Data
         public CsvPlayer() => playerData = new DataTable().NewRow();
         public CsvPlayer(DataRow playerData) => this.playerData = playerData;
 
-
         public Player Get()
         {
             return new()
             {
-                PlayerID = (ulong)playerData[CsvGameColumnNames.GetFriendlyName(CsvGameColumnNames.Names.PlayerID)],
-                PlayerName = (string)playerData[CsvGameColumnNames.GetFriendlyName(CsvGameColumnNames.Names.PlayerName)],
-                PlayerCurrentPoints = (double)playerData[CsvGameColumnNames.GetFriendlyName(CsvGameColumnNames.Names.PlayerCurrentPoints)]
+                PlayerID = (ulong)playerData[GetFriendlyName(Names.PlayerID)],
+                PlayerName = (string)playerData[GetFriendlyName(Names.PlayerName)],
+                PlayerCurrentPoints = (double)playerData[GetFriendlyName(Names.PlayerCurrentPoints)]
             };
         }
 
@@ -32,7 +29,7 @@ namespace ForJakub.gateway.Data
             DataTable table = new();
             foreach (var prop in data.GetType().GetProperties())
             {
-                table.Columns.Add(prop.Name, prop.PropertyType);
+                table.Columns.Add(GetFriendlyName(Enum.Parse<Names>(prop.Name)), prop.PropertyType);
             }
 
             DataRow row = table.NewRow();

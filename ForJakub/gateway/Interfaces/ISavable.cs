@@ -1,4 +1,4 @@
-﻿using ForJakub.core.interdaces;
+﻿using ForJakub.core.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;

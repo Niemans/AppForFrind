@@ -1,8 +1,5 @@
-﻿using ForJakub.core;
-using ForJakub.gateway.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ForJakub.gateway.Interfaces;
+
 using static ForJakub.gateway.CsvGameColumnNames;
 
 namespace ForJakub.gateway
