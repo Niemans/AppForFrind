@@ -1,16 +1,11 @@
-﻿using ForJakub.core;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ForJakub.core.interfaces;
 
 namespace ForJakub.gateway.interfaces
 {
-    internal interface ISave
+    internal interface ISave<in T>
     {
-        public bool Save(Player person);
+        public bool Save(T data);
         
-        public bool SaveFile(IEnumerable<Player> PersonEnumerable);
-
-
+        public bool SaveFile(IEnumerable<T> data);
     }
 }

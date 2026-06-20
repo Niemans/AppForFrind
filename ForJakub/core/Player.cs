@@ -3,20 +3,21 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ForJakub.core
 {
-    [method: SetsRequiredMembers]
-    internal class Player() : IData
+    internal class Player
+        (ulong playerID, string playerName, double playerCurrentPoints)
+        : IData
     {
-        public const int relevantDecimalPoint = 5;
+        private const int c_relevantDecimalPoint = 5;
 
-        public required ulong PlayerID { get; init; } = 0;
-        public required string PlayerName { get; init; } = "";
-        public required double PlayerCurrentPoints { get; set; } = 0;
+        public ulong PlayerID { get; init; } = playerID;
+        public string PlayerName { get; init; } = playerName;
+        public double PlayerCurrentPoints { get; set; } = playerCurrentPoints;
 
-        private Game? LastGame { get; set; }
+        private Game? LastGame { get; set; } = null;
 
         public double GetRoundedPoints()
         {
-            return Math.Round(PlayerCurrentPoints, relevantDecimalPoint);
+            return Math.Round(PlayerCurrentPoints, c_relevantDecimalPoint);
         }
     }
 }

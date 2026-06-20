@@ -1,4 +1,8 @@
-﻿namespace ForJakub.core.interfaces
+﻿using System.Collections;
+
+namespace ForJakub.core.interfaces
 {
-    internal interface IData {}
+    internal interface IData
+    {
+    }
 }

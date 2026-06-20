@@ -2,13 +2,14 @@
 
 namespace ForJakub.core
 {
-    internal class Game : IData
+    internal class Game 
+        (ulong gameId, DateTime time, string comment, List<Entry> entries)
+        : IData
     {
-        public required ulong GameID { get; init; }
-        public required DateTime Time { get; init; }
-        public required string Comment { get; set; }
+        public ulong GameID { get; init; } = gameId;
+        public DateTime Time { get; init; } = time;
+        public string Comment { get; set; } = comment;
 
-        public required List<Entry> playerEntries = [];
-
+        public List<Entry> playerEntries = entries;
     }
 }
