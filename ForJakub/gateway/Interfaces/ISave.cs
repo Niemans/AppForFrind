@@ -1,6 +1,4 @@
-﻿using ForJakub.core.interfaces;
-
-namespace ForJakub.gateway.interfaces
+﻿namespace ForJakub.gateway.interfaces
 {
     internal interface ISave<in T>
     {

@@ -1,5 +1,4 @@
 ﻿using ForJakub.core.interfaces;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ForJakub.core
 {
