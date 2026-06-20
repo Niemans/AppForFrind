@@ -21,11 +21,6 @@ namespace ForJakub.gateway.csv
             }
         }
 
-        private static CsvWriter PrepareWriter()
-        {
-            var writer = new StreamWriter(FilePath);
-            return new CsvWriter(writer, CultureInfo.InvariantCulture);
-        }
         
         public bool Save(T data)
         {
@@ -98,6 +93,12 @@ namespace ForJakub.gateway.csv
             var a = configuration.Get<AppSettings>() ?? new AppSettings([]);
             var file = a.CsvFiles.FirstOrDefault(f => f.FileName.Contains(typeof(T).Name)) ?? new CsvFile("");
             return Path.Combine("../../../data", file.FileName);
+        }
+        
+        private static CsvWriter PrepareWriter()
+        {
+            var writer = new StreamWriter(FilePath);
+            return new CsvWriter(writer, CultureInfo.InvariantCulture);
         }
         
         private record CsvFile(string FileName);
