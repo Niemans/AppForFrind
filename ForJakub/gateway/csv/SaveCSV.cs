@@ -11,44 +11,37 @@ namespace ForJakub.gateway.csv
         where T : IData
         where U : IDataCSV<T>
     {
-        private static AppSettings Settings
+        private static string FilePath
         {
             get
             {
-                if (field != null) return field;
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .Build();
-                field = configuration.Get<AppSettings>() ?? new([]);
-
+                if(field != null) return field;
+                field = InitializePath();
                 return field;
             }
         }
 
+        private static CsvWriter PrepareWriter()
+        {
+            var writer = new StreamWriter(FilePath);
+            return new CsvWriter(writer, CultureInfo.InvariantCulture);
+        }
+        
         public bool Save(T data)
         {
-            var file = Settings.CsvFiles
-                           .FirstOrDefault(f => f.FileName.Contains(typeof(T).Name))
-                       ?? new CsvFile("");
-            var path = Path.Combine("../../../data", file.FileName);
-
-            using var writer = new StreamWriter(path);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
+            using var csv = PrepareWriter();
+            
             csv.WriteHeader<U>();
 
             try
             {
-                var csvData = MapperRegistry.GetMapper<U, T>()
-                    .Map(data);
+                var csvData = MapperRegistry.Map<T, U>(data);
                 csv.NextRecord();
                 csv.WriteRecord(csvData);
             }
             catch (InvalidOperationException)
             {
-                var csvList = MapperRegistry.GetMapper<U, T>()
-                    .MapToList(data).ToList();
+                var csvList = MapperRegistry.MapToList<T, U>(data);
                 foreach (var csvData in csvList)
                 {
                     csv.NextRecord();
@@ -66,37 +59,25 @@ namespace ForJakub.gateway.csv
 
         public bool SaveFile(IEnumerable<T> data)
         {
-            var file = Settings.CsvFiles
-                           .FirstOrDefault(f => f.FileName.Contains(typeof(T).Name))
-                       ?? new CsvFile("");
-            var path = Path.Combine("../../../data", file.FileName);
-
-            using var writer = new StreamWriter(path);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            using var csv = PrepareWriter();
 
             csv.WriteHeader<T>();
 
             var list = data.ToList();
-            var mapper = MapperRegistry.GetMapper<U, T>();
             try
             {
-                foreach (var entry in list)
+                foreach (var csvData in list.Select(MapperRegistry.Map<T, U>))
                 {
-                    var csvData = mapper.Map(entry);
                     csv.NextRecord();
                     csv.WriteRecord(csvData);
                 }
             }
             catch (InvalidOperationException)
             {
-                foreach (var entry in list)
+                foreach (var csvData in list.Select(MapperRegistry.MapToList<T, U>).SelectMany(csvList => csvList))
                 {
-                    var csvList = mapper.MapToList(entry);
-                    foreach (var csvData in csvList)
-                    {
-                        csv.NextRecord();
-                        csv.WriteRecord(csvData);
-                    }
+                    csv.NextRecord();
+                    csv.WriteRecord(csvData);
                 }
             }
             catch
@@ -108,9 +89,18 @@ namespace ForJakub.gateway.csv
             return true;
         }
 
-
+        private static string InitializePath()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+            var a = configuration.Get<AppSettings>() ?? new AppSettings([]);
+            var file = a.CsvFiles.FirstOrDefault(f => f.FileName.Contains(typeof(T).Name)) ?? new CsvFile("");
+            return Path.Combine("../../../data", file.FileName);
+        }
+        
         private record CsvFile(string FileName);
-
         private record AppSettings(List<CsvFile> CsvFiles);
     }
 }

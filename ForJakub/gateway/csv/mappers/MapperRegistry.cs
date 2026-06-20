@@ -8,22 +8,49 @@ namespace ForJakub.gateway.csv.mappers;
 internal static class MapperRegistry
 
 {
-    private static IMapper<PlayerCSV, Player> PlayerMapper = new PlayerMapper();
-    private static IMapper<EntryCSV, Entry> EntryMapper = new EntryMapper();
-    private static IMapper<GameCSV, Game> GameMapper = new GameMapper();
+    private static readonly IMapper<Player, PlayerCSV> PlayerMapper = new PlayerMapper();
+    private static readonly IMapper<Entry, EntryCSV> EntryMapper = new EntryMapper();
+    private static readonly IMapper<Game, GameCSV> GameMapper = new GameMapper();
 
     private static readonly Dictionary<Type, IMapper> Mappers = new()
     {
-        [typeof(PlayerCSV)] = PlayerMapper,
-        [typeof(EntryCSV)] = EntryMapper,
-        [typeof(GameCSV)] = GameMapper
+        [typeof(Player)] = PlayerMapper,
+        [typeof(Entry)] = EntryMapper,
+        [typeof(Game)] = GameMapper
     };
 
-    public static IMapper<T, U> GetMapper<T, U>() 
-        where T : IDataCSV<U> 
-        where U : IData
+    private static IMapper<T, U> GetMapper<T,U> () 
+        where T : IData
+        where U : IDataCSV<T>
     {
         return (IMapper<T, U>)Mappers[typeof(T)];
     }
     
+    public static T Map <T,U>(U data)
+        where T : IData
+        where U : IDataCSV<T>
+    {
+        return GetMapper<T,U>().Map(data);
+    }
+
+    public static U Map <T,U>(T data)
+        where T : IData
+        where U : IDataCSV<T>
+    {
+        return GetMapper<T,U>().Map(data);
+    }
+
+    public static List<T> MapToList <T,U>(U data)
+        where T : IData
+        where U : IDataCSV<T>
+    {
+        return GetMapper<T,U>().MapToList(data);
+    }
+
+    public static List<U> MapToList <T,U>(T data)
+        where T : IData
+        where U : IDataCSV<T>
+    {
+        return GetMapper<T,U>().MapToList(data);
+    }
 }

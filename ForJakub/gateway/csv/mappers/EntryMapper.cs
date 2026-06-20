@@ -4,7 +4,7 @@ using ForJakub.gateway.interfaces;
 
 namespace ForJakub.gateway.csv.mappers;
 
-internal class EntryMapper : IMapper<EntryCSV, Entry>
+internal sealed class EntryMapper : IMapper<Entry, EntryCSV>
 {
     public Entry Map(EntryCSV source) => new(
         playerPlacement: source.PlayerPlacement,
