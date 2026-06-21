@@ -15,9 +15,4 @@ internal readonly record struct Game
             {{{string.Join("\n    ", playerEntries.Select(entry => entry.ToString()))}}} }}
         """;
     }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(GameID);
-    }
 }
