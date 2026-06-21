@@ -1,4 +1,5 @@
 ﻿using ForJakub.core;
+using ForJakub.core.domain;
 using ForJakub.gateway.interfaces;
 
 namespace ForJakub.gateway.csv.objectsCSV;
