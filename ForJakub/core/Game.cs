@@ -2,14 +2,26 @@
 
 namespace ForJakub.core
 {
-    internal class Game 
-        (ulong gameId, DateTime time, string comment, List<Entry> entries)
+    internal sealed record Game 
+        (ulong GameID, DateTime Time, string Comment, List<Entry> playerEntries)
         : IData
     {
-        public ulong GameID { get; init; } = gameId;
-        public DateTime Time { get; init; } = time;
-        public string Comment { get; set; } = comment;
+        public string Comment { get; set; } = Comment;
 
-        public List<Entry> playerEntries = entries;
+        public readonly List<Entry> playerEntries = playerEntries;
+
+        public bool Equals(Game? other)
+        {
+            if (other is null) return false;
+            return GameID == other.GameID 
+                   && Time == other.Time 
+                   && Comment == other.Comment
+                   && playerEntries.SequenceEqual(other.playerEntries);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(GameID, Time, playerEntries);
+        }
     }
 }

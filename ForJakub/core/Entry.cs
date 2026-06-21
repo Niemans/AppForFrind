@@ -2,12 +2,12 @@
 
 namespace ForJakub.core
 {
-    internal class Entry
-        (Player player, double pointsGain, int playerPlacement) 
+    internal record Entry
+        (Player Player, double PointsGain, int PlayerPlacement) 
         : IData
     {
-        public Player Player { get; set; } = player;
-        public double PointsGain { get; set; } = pointsGain;
-        public int PlayerPlacement { get; set; } = playerPlacement;
+        public Player Player { get; set; } = Player;
+        public double PointsGain { get; set; } = PointsGain;
+        public int PlayerPlacement { get; set; } = PlayerPlacement;
     }
 }

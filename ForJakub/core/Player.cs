@@ -2,15 +2,15 @@
 
 namespace ForJakub.core
 {
-    internal class Player
-        (ulong playerID, string playerName, double playerCurrentPoints)
+    internal record Player
+        (ulong PlayerID, string PlayerName, double PlayerCurrentPoints)
         : IData
     {
         private const int c_relevantDecimalPoint = 5;
 
-        public ulong PlayerID { get; init; } = playerID;
-        public string PlayerName { get; init; } = playerName;
-        public double PlayerCurrentPoints { get; set; } = playerCurrentPoints;
+        public ulong PlayerID { get; set; } = PlayerID;
+        public string PlayerName { get; set; } = PlayerName;
+        public double PlayerCurrentPoints { get; set; } = PlayerCurrentPoints;
 
         private Game? LastGame { get; set; } = null;
 

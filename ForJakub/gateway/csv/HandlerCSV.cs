@@ -4,10 +4,11 @@ using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using ForJakub.core.interfaces;
 using ForJakub.gateway.csv.mappers;
+using ForJakub.gateway.csv.objectsCSV;
 
 namespace ForJakub.gateway.csv
 {
-    internal sealed class SaveCSV<T, U> : ISave<T>
+    internal sealed class HandlerCSV<T, U> : IHandler<T>
         where T : IData
         where U : IDataCSV<T>
     {
@@ -24,27 +25,23 @@ namespace ForJakub.gateway.csv
         
         public bool Save(T data)
         {
-            using var csv = PrepareWriter();
+            using var writer = new StreamWriter(FilePath);
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
             
             csv.WriteHeader<U>();
-
+            csv.NextRecord();
+            
             try
             {
-                var csvData = MapperRegistry.Map<T, U>(data);
-                csv.NextRecord();
-                csv.WriteRecord(csvData);
+                csv.WriteRecord(MapperRegistry.Map<T, U>(data));
             }
             catch (InvalidOperationException)
             {
-                var csvList = MapperRegistry.MapToList<T, U>(data);
-                foreach (var csvData in csvList)
-                {
-                    csv.NextRecord();
-                    csv.WriteRecord(csvData);
-                }
+                csv.WriteRecords(MapperRegistry.MapToList<T, U>(data));
             }
             catch
             {
+                csv.Flush();
                 return false;
             }
 
@@ -52,31 +49,26 @@ namespace ForJakub.gateway.csv
             return true;
         }
 
-        public bool SaveFile(IEnumerable<T> data)
+        public bool SaveAll(IEnumerable<T> data)
         {
-            using var csv = PrepareWriter();
+            using var writer = new StreamWriter(FilePath);
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-            csv.WriteHeader<T>();
+            csv.WriteHeader<U>();
+            csv.NextRecord();
 
             var list = data.ToList();
             try
             {
-                foreach (var csvData in list.Select(MapperRegistry.Map<T, U>))
-                {
-                    csv.NextRecord();
-                    csv.WriteRecord(csvData);
-                }
+                csv.WriteRecords(list.Select(MapperRegistry.Map<T, U>));
             }
             catch (InvalidOperationException)
             {
-                foreach (var csvData in list.Select(MapperRegistry.MapToList<T, U>).SelectMany(csvList => csvList))
-                {
-                    csv.NextRecord();
-                    csv.WriteRecord(csvData);
-                }
+                csv.WriteRecords(list.Select(MapperRegistry.MapToList<T, U>).SelectMany(csvList => csvList));
             }
             catch
             {
+                csv.Flush();
                 return false;
             }
 
@@ -84,21 +76,24 @@ namespace ForJakub.gateway.csv
             return true;
         }
 
+        public IEnumerable<T> Read()
+        {
+            using var reader = new StreamReader(FilePath);
+            using var csv =  new CsvReader(reader, CultureInfo.InvariantCulture);
+            
+            var records = csv.GetRecords<U>().ToList();
+            return records.Select(MapperRegistry.Map<T,U>);
+        }
+        
         private static string InitializePath()
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false)
                 .Build();
-            var a = configuration.Get<AppSettings>() ?? new AppSettings([]);
-            var file = a.CsvFiles.FirstOrDefault(f => f.FileName.Contains(typeof(T).Name)) ?? new CsvFile("");
+            var appSettings = configuration.Get<AppSettings>() ?? new AppSettings([]);
+            var file = appSettings.CsvFiles.FirstOrDefault(f => f.FileName.Contains(typeof(T).Name)) ?? new CsvFile("");
             return Path.Combine("../../../data", file.FileName);
-        }
-        
-        private static CsvWriter PrepareWriter()
-        {
-            var writer = new StreamWriter(FilePath);
-            return new CsvWriter(writer, CultureInfo.InvariantCulture);
         }
         
         private record CsvFile(string FileName);

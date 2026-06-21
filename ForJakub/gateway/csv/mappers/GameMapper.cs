@@ -8,19 +8,18 @@ internal sealed class GameMapper : IMapper<Game, GameCSV>
 {
     public Game Map(GameCSV source) => new
     (
-        gameId: source.GameID,
-        time: source.Time,
-        comment: source.Comment,
-        entries:
-        [ new Entry
+        GameID: source.GameID,
+        Time: source.Time,
+        Comment: source.Comment,
+        playerEntries: [ new Entry
         (
-            playerPlacement: source.PlayerPlacement,
-            pointsGain: source.PlayerCurrentPoints,
-            player: new Player
+            PlayerPlacement: source.PlayerPlacement,
+            PointsGain: source.PointsGain,
+            Player: new Player
             (
-                playerID: source.PlayerID,
-                playerName: source.PlayerName,
-                playerCurrentPoints: source.PlayerCurrentPoints
+                PlayerID: source.PlayerID,
+                PlayerName: source.PlayerName,
+                PlayerCurrentPoints: source.PlayerCurrentPoints
             )
         )]
     );

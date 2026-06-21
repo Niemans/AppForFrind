@@ -7,12 +7,12 @@ namespace ForJakub.gateway.csv.mappers;
 internal sealed class EntryMapper : IMapper<Entry, EntryCSV>
 {
     public Entry Map(EntryCSV source) => new(
-        playerPlacement: source.PlayerPlacement,
-        pointsGain: source.PointsGain,
-        player: new Player(
-            playerID: source.PlayerID,
-            playerName: source.PlayerName,
-            playerCurrentPoints: source.PlayerCurrentPoints
+        PlayerPlacement: source.PlayerPlacement,
+        PointsGain: source.PointsGain,
+        Player: new Player(
+            PlayerID: source.PlayerID,
+            PlayerName: source.PlayerName,
+            PlayerCurrentPoints: source.PlayerCurrentPoints
         )
     );
 

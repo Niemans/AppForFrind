@@ -7,9 +7,9 @@ namespace ForJakub.gateway.csv.mappers;
 internal sealed class PlayerMapper : IMapper<Player, PlayerCSV>
 {
     public Player Map(PlayerCSV source) => new(
-        playerID: source.PlayerID,
-        playerName: source.PlayerName,
-        playerCurrentPoints: source.PlayerCurrentPoints
+        PlayerID: source.PlayerID,
+        PlayerName: source.PlayerName,
+        PlayerCurrentPoints: source.PlayerCurrentPoints
     );
     
     public PlayerCSV Map(Player source) => new(source);
