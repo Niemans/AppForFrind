@@ -2,25 +2,22 @@
 
 namespace ForJakub.core.domain;
 
-internal sealed record Game 
+internal readonly record struct Game 
     (ulong GameID, DateTime Time, string Comment, List<Entry> playerEntries)
     : IData
 {
-    public string Comment { get; set; } = Comment;
-
     public readonly List<Entry> playerEntries = playerEntries;
 
-    public bool Equals(Game? other)
+    public override string ToString()
     {
-        if (other is null) return false;
-        return GameID == other.GameID 
-               && Time == other.Time 
-               && Comment == other.Comment
-               && playerEntries.SequenceEqual(other.playerEntries);
+        return $$$"""
+        Game: { {{{nameof(GameID)}}}: {{{GameID}}}, {{{nameof(Time)}}}: {{{Time}}}, {{{nameof(Comment)}}}: {{{Comment}}}, {{{nameof(playerEntries)}}}: {
+            {{{string.Join("\n    ", playerEntries.Select(entry => entry.ToString()))}}} }}
+        """;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(GameID, Time, playerEntries);
+        return HashCode.Combine(GameID);
     }
 }
