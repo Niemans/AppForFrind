@@ -12,14 +12,9 @@ internal record Equation
         Lexer(input);
     }
 
-    private static string RemoveWhiteSpace(string input)
-    {
-        return string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
-    }
-
     private void Lexer(string input)
     {
-        var equation = string.Concat([..input.Where(c => !char.IsWhiteSpace(c))]).ToLower();
+        var equation = string.Concat(input.Where(c => !char.IsWhiteSpace(c))).ToLower();
 
         List<string> operators =
         [
