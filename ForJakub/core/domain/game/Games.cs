@@ -1,4 +1,4 @@
-namespace ForJakub.core.domain;
+namespace ForJakub.core.domain.game;
 
 internal class Games
 {

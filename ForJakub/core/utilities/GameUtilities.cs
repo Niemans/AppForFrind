@@ -1,4 +1,4 @@
-﻿using ForJakub.core.domain;
+﻿using ForJakub.core.domain.game;
 
 namespace ForJakub.core.utilities;
 

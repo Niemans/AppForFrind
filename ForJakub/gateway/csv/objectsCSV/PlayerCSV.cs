@@ -1,5 +1,4 @@
-﻿using ForJakub.core;
-using ForJakub.core.domain;
+﻿using ForJakub.core.domain.game;
 using ForJakub.gateway.interfaces;
 
 namespace ForJakub.gateway.csv.objectsCSV;

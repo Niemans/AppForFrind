@@ -1,6 +1,6 @@
 ﻿using ForJakub.core.interfaces;
 
-namespace ForJakub.core.domain;
+namespace ForJakub.core.domain.game;
 
 internal readonly record struct Player
     (ulong PlayerID, string PlayerName, double PlayerCurrentPoints)
