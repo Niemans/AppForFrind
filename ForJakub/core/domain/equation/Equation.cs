@@ -1,12 +1,11 @@
-﻿using System.Buffers;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace ForJakub.core.domain.equation;
 
 internal record Equation
 {
     public readonly List<Token> tokens = [];
-
+    
     public Equation(string input)
     {
         Lexer(input);
@@ -17,21 +16,23 @@ internal record Equation
         var equation = string.Concat(input.Where(c => !char.IsWhiteSpace(c))).ToLower();
 
         List<string> operators =
-        [
-            ..
-            Token.Operators
-                .Where(equation.Contains)
-                .Select(c => c)
+        [..
+            Operators.Ops
+                .Where(op => equation.Contains(op.Key))
+                .Select(op => op.Value.Sign)
         ];
-
-        var dict = operators.ToDictionary(op => op, _ => new List<int>());
+        
+        var operatorIndexesDict = operators.ToDictionary(op => op, _ => new List<int>());
         var matches = Regex.Matches(equation, string.Join("|", operators.Select(Regex.Escape)));
         foreach (Match match in matches)
         {
-            dict[match.Value].Add(match.Index);
+            operatorIndexesDict[match.Value].Add(match.Index);
         }
 
-        List<(int start, int end)> operatorsPlaces = [..dict.SelectMany(t => t.Value, (t, op) => (op, t.Key.Length))];
+        List<(int start, int end)> operatorsPlaces = 
+        [..
+            operatorIndexesDict.SelectMany(t => t.Value, (t, op) => (op, t.Key.Length))
+        ];
         HashSet<int> uniqueIndexes = [0];
         uniqueIndexes.UnionWith(operatorsPlaces.Select(res => res.start));
         uniqueIndexes.UnionWith(operatorsPlaces.Select(res => res.start + res.end));
@@ -43,5 +44,17 @@ internal record Equation
             tokens.Add(new Token(equation[uIndexesList[i]..uIndexesList[i + 1]]));
         }
         tokens.Add(new Token(equation[uIndexesList[^1]..]));
+    }
+
+    //shunting yard algorithm
+    private void Parser()
+    {
+        List<Token> output = [];
+        Stack<Token> operatorsStack = [];
+        
+        foreach (var token in tokens)
+        {
+            
+        }
     }
 }
