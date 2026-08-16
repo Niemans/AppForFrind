@@ -7,7 +7,7 @@ public static class Operators
         { "(", new("(", "Left Parenthesis", 1000) },
         { ")", new(")", "Right Parenthesis", 1000) },
 
-        { "^", new("^", "Power", 100) },
+        { "^", new("^", "Power", 100, false) },
 
         { "sin", new("sin", "Sin", 90) },
         { "cos", new("cos", "Cos", 90) },

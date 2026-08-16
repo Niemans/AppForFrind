@@ -1,11 +1,11 @@
 ﻿namespace ForJakub.core.domain.equation;
 
-public readonly struct Operator(string sign, string name, int value) : IEquatable<Operator>
+public readonly struct Operator(string sign, string name, int value, bool associativityLeft = true) : IEquatable<Operator>
 {
     public string Sign { get; } = sign;
     public string Name { get; } = name;
     public int Value { get; } = value;
-    
+    public bool AssociativityLeft { get; } = associativityLeft;
     
     public override int GetHashCode() => HashCode.Combine(Sign);
     public bool Equals(Operator other) => string.Equals(Sign, other.Sign) && string.Equals(Name, other.Name);

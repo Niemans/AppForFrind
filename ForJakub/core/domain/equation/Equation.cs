@@ -5,10 +5,12 @@ namespace ForJakub.core.domain.equation;
 internal record Equation
 {
     public readonly List<Token> tokens = [];
+    public readonly Queue<Token> parserQueue = [];
     
     public Equation(string input)
     {
         Lexer(input);
+        Parser();
     }
 
     private void Lexer(string input)
@@ -29,13 +31,13 @@ internal record Equation
             operatorIndexesDict[match.Value].Add(match.Index);
         }
 
-        List<(int start, int end)> operatorsPlaces = 
+        List<(int start, int length)> operatorsPlaces = 
         [..
             operatorIndexesDict.SelectMany(t => t.Value, (t, op) => (op, t.Key.Length))
         ];
         HashSet<int> uniqueIndexes = [0];
         uniqueIndexes.UnionWith(operatorsPlaces.Select(res => res.start));
-        uniqueIndexes.UnionWith(operatorsPlaces.Select(res => res.start + res.end));
+        uniqueIndexes.UnionWith(operatorsPlaces.Select(res => res.start + res.length));
         uniqueIndexes = [.. uniqueIndexes.OrderBy(i => i)];
 
         var uIndexesList = uniqueIndexes.ToList();
@@ -43,18 +45,64 @@ internal record Equation
         {
             tokens.Add(new Token(equation[uIndexesList[i]..uIndexesList[i + 1]]));
         }
-        tokens.Add(new Token(equation[uIndexesList[^1]..]));
     }
 
-    //shunting yard algorithm
+    //shunting yard algorithmz
     private void Parser()
     {
-        List<Token> output = [];
-        Stack<Token> operatorsStack = [];
+        parserQueue.Clear();
+        Stack<Token> operatorStack = [];
         
         foreach (var token in tokens)
         {
-            
+            switch (token.Type)
+            {
+                case Token.EType.Number:
+                case Token.EType.Variable:
+                    parserQueue.Enqueue(token);
+                    break;
+                case Token.EType.Operation:
+                    if (operatorStack.Count == 0 || token.GetOperatorSign().Equals("("))
+                    {
+                        operatorStack.Push(token);
+                        break;
+                    }
+                    
+                    if (token.GetOperatorSign().Equals(")"))
+                    {
+                        while (operatorStack.Count != 0 && !operatorStack.Peek().GetOperatorSign().Equals("("))
+                        {
+                            var op = operatorStack.Pop();
+                            parserQueue.Enqueue(op);
+                        }
+
+                        if (operatorStack.Count != 0)
+                        {
+                            operatorStack.Pop();
+                        }
+                        break;
+                    }
+                    
+                    while (operatorStack.Count != 0 
+                        && operatorStack.Peek().GetOperatorSign() != "("
+                        && (token.GetOperatorValue() < operatorStack.Peek().GetOperatorValue()
+                        || (token.GetOperatorLeftAssociative() 
+                            && token.GetOperatorValue() == operatorStack.Peek().GetOperatorValue())))
+                    {
+                        var op = operatorStack.Pop();
+                        parserQueue.Enqueue(op);
+                    }
+                    operatorStack.Push(token);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        while (operatorStack.Count != 0)
+        {
+            var op = operatorStack.Pop();
+            parserQueue.Enqueue(op);
         }
     }
 }

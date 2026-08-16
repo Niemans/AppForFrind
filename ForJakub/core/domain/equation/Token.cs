@@ -5,7 +5,7 @@ namespace ForJakub.core.domain.equation;
 
 public class Token
 {
-    private EType _EType { get; }
+    public EType Type { get; }
     private readonly double? _numberValue;
     private readonly string? _variableName;
     private readonly Operator? _operator;
@@ -18,42 +18,58 @@ public class Token
         
         if (Operators.Ops.TryGetValue(tokenString, out var op))
         {
-            _EType = EType.Operation;
+            Type = EType.Operation;
             _operator =  op;
         }
         else if (TryParse(tokenString, out var parsedValue))
         {
-            _EType = EType.Number;
+            Type = EType.Number;
             _numberValue = parsedValue;
         }
         else
         {
-            _EType = EType.Variable;
+            Type = EType.Variable;
             _variableName = tokenString;
         }
     }
     
     private Token(double numberValue)
     {
-        _EType = EType.Number;
+        Type = EType.Number;
         _numberValue = numberValue;
     }
 
     public override string ToString()
     {
-        return _EType switch
+        return Type switch
         {
-            EType.Operation => _operator!.Value.Name,
-            EType.Number => "Number(" + _numberValue + ")",
-            EType.Variable => _variableName!,
-            _ => throw new ArgumentOutOfRangeException()
+            EType.Operation => _operator?.Name ?? "_o_",
+            EType.Number => _numberValue.ToString() == null ? "_n_" : $"Number({_numberValue})",
+            EType.Variable => _variableName ?? "_v_",
+            _ => "_t_"
         };
     }
-    
+
+    public string ToSimpleString()
+    {
+        return Type switch
+        {
+            EType.Operation => _operator?.Sign ?? "_o_",
+            EType.Number => _numberValue.ToString() ?? "_n_",
+            EType.Variable => _variableName ?? "_v_",
+            _ => "_t_"
+        };
+    }
+
+    //TODO: change from X to X?
+    public string GetOperatorSign() => _operator?.Sign ?? "_o_";
+    public int GetOperatorValue() => _operator?.Value ?? -1;
+    public bool GetOperatorLeftAssociative() => _operator?.AssociativityLeft ?? true;
+
     public static implicit operator Token(double value) => new(value);
     public static implicit operator double?(Token token) => token._numberValue;
 
-    private enum EType
+    public enum EType
     {
         Operation,
         Number,
