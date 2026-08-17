@@ -32,19 +32,13 @@ public class Token
             _variableName = tokenString;
         }
     }
-    
-    private Token(double numberValue)
-    {
-        Type = EType.Number;
-        _numberValue = numberValue;
-    }
 
     public override string ToString()
     {
         return Type switch
         {
             EType.Operation => _operator?.Name ?? "_o_",
-            EType.Number => _numberValue.ToString() == null ? "_n_" : $"Number({_numberValue})",
+            EType.Number => _numberValue.ToString() != null ? $"Number({_numberValue})" : "_n_",
             EType.Variable => _variableName ?? "_v_",
             _ => "_t_"
         };
@@ -62,13 +56,10 @@ public class Token
     }
 
     //TODO: change from X to X?
-    public string GetOperatorSign() => _operator?.Sign ?? "_o_";
-    public int GetOperatorValue() => _operator?.Value ?? -1;
-    public bool GetOperatorLeftAssociative() => _operator?.AssociativityLeft ?? true;
-
-    public static implicit operator Token(double value) => new(value);
-    public static implicit operator double?(Token token) => token._numberValue;
-
+    public string? GetOperatorSign() => _operator?.Sign;
+    public int? GetOperatorValue() => _operator?.Value;
+    public bool? GetOperatorLeftAssociative() => _operator?.AssociativityLeft;
+    
     public enum EType
     {
         Operation,

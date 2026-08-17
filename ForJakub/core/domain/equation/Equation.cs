@@ -47,7 +47,7 @@ internal record Equation
         }
     }
 
-    //shunting yard algorithmz
+    //shunting yard algorithm
     private void Parser()
     {
         parserQueue.Clear();
@@ -62,15 +62,20 @@ internal record Equation
                     parserQueue.Enqueue(token);
                     break;
                 case Token.EType.Operation:
-                    if (operatorStack.Count == 0 || token.GetOperatorSign().Equals("("))
+                    if (token.GetOperatorSign() == null)
+                    {
+                        throw new InvalidOperationException("Operation without Operator");
+                    }
+                    
+                    if (operatorStack.Count == 0 || token.GetOperatorSign()!.Equals("("))
                     {
                         operatorStack.Push(token);
                         break;
                     }
                     
-                    if (token.GetOperatorSign().Equals(")"))
+                    if (token.GetOperatorSign()!.Equals(")"))
                     {
-                        while (operatorStack.Count != 0 && !operatorStack.Peek().GetOperatorSign().Equals("("))
+                        while (operatorStack.Count != 0 && !operatorStack.Peek().GetOperatorSign()!.Equals("("))
                         {
                             var op = operatorStack.Pop();
                             parserQueue.Enqueue(op);
@@ -86,7 +91,7 @@ internal record Equation
                     while (operatorStack.Count != 0 
                         && operatorStack.Peek().GetOperatorSign() != "("
                         && (token.GetOperatorValue() < operatorStack.Peek().GetOperatorValue()
-                        || (token.GetOperatorLeftAssociative() 
+                        || (token.GetOperatorLeftAssociative()!.Value 
                             && token.GetOperatorValue() == operatorStack.Peek().GetOperatorValue())))
                     {
                         var op = operatorStack.Pop();
